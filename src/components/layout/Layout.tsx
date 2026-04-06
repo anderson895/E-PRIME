@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   Home, Users, FileText, Stethoscope, BarChart3, Shield,
-  ClipboardList, Database, LogOut, Heart, Menu, X, Bell,
+  ClipboardList, Database, LogOut, Menu, X, Bell,
   ChevronDown,
 } from "lucide-react";
+import logoUrl from "@/logo.png";
 
 interface NavItem {
   id: string;
@@ -51,6 +52,7 @@ interface LayoutProps {
 export default function Layout({ activeTab, onTabChange, children }: LayoutProps) {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
 
   if (!user) return null;
   const navItems = getNavItems(user.role);
@@ -83,8 +85,8 @@ export default function Layout({ activeTab, onTabChange, children }: LayoutProps
         {/* Brand Header */}
         <div className="p-5 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0">
-              <Heart size={20} className="text-gold" fill="currentColor" />
+            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0">
+              <img src={logoUrl} alt="ePRIME-RHU" className="w-9 h-9 object-contain" />
             </div>
             <div>
               <h1 className="text-gold font-display font-bold text-lg tracking-wide leading-tight">
@@ -157,11 +159,17 @@ export default function Layout({ activeTab, onTabChange, children }: LayoutProps
               >
                 <Menu size={22} />
               </button>
+              {/* Logo visible in top nav on mobile */}
+              <img
+                src={logoUrl}
+                alt="ePRIME-RHU"
+                className="w-8 h-8 object-contain lg:hidden rounded-full"
+              />
               <div>
                 <h2 className="text-lg font-bold text-maroon leading-tight">
                   {navItems.find((n) => n.id === activeTab)?.label || "Dashboard"}
                 </h2>
-                <p className="text-xs text-maroon-200 hidden sm:block">
+                <p className="text-xs text-maroon font-medium hidden sm:block">
                   {new Date().toLocaleDateString("en-PH", {
                     weekday: "long",
                     year: "numeric",
@@ -174,20 +182,58 @@ export default function Layout({ activeTab, onTabChange, children }: LayoutProps
 
             <div className="flex items-center gap-3">
               {/* Notification Bell */}
-              <button className="relative p-2 rounded-lg hover:bg-maroon-50 text-maroon-300 hover:text-maroon transition-colors">
-                <Bell size={20} />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setNotifOpen((prev) => !prev)}
+                  className="relative p-2 rounded-lg hover:bg-maroon-50 text-maroon transition-colors"
+                >
+                  <Bell size={20} />
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+                </button>
+
+                {/* Dropdown */}
+                {notifOpen && (
+                  <>
+                    {/* backdrop */}
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setNotifOpen(false)}
+                    />
+                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden">
+                      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                        <span className="font-bold text-maroon text-sm">Notifications</span>
+                        <span className="text-xs bg-red-100 text-red-600 font-semibold px-2 py-0.5 rounded-full">1 new</span>
+                      </div>
+                      <ul className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
+                        <li className="px-4 py-3 hover:bg-maroon-50 transition-colors cursor-pointer">
+                          <p className="text-sm font-semibold text-maroon">System Ready</p>
+                          <p className="text-xs text-gray-500 mt-0.5">ePRIME-RHU is running normally.</p>
+                          <p className="text-[10px] text-gray-400 mt-1">Just now</p>
+                        </li>
+                      </ul>
+                      <div className="px-4 py-2 border-t border-gray-100 text-center">
+                        <button
+                          onClick={() => setNotifOpen(false)}
+                          className="text-xs text-maroon font-semibold hover:underline"
+                        >
+                          Dismiss all
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
               {/* User avatar (desktop) */}
               <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-maroon-50">
                 <div className="w-8 h-8 rounded-full bg-maroon/10 flex items-center justify-center text-maroon font-bold text-xs">
                   {initials}
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-maroon-700 leading-tight">
+                  <p className="text-sm font-bold text-maroon leading-tight">
                     {user.displayName}
                   </p>
-                  <p className="text-[10px] text-maroon-200">{user.role}</p>
+                  <p className="text-[11px] text-maroon/60 font-medium">{user.role}</p>
                 </div>
               </div>
             </div>

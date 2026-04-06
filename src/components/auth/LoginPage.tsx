@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import type { UserRole } from "@/types";
 import { User, Lock, Eye, EyeOff, Shield, Loader2, X, AlertCircle, Mail } from "lucide-react";
+import logoUrl from "@/logo.png";
 
 const roles: UserRole[] = ["Doctor", "Nurse", "Administrative Staff"];
 
@@ -57,17 +58,19 @@ export default function LoginPage() {
       {/* ── Left panel — branding ── */}
       <div className="hidden md:flex md:w-1/2 relative flex-col items-center justify-center overflow-hidden">
 
-        {/* RHU building background */}
-        <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/pulic/logo.png')" }}
-        />
-        {/* Dark overlay so text is readable */}
-        <div className="absolute inset-0 bg-maroon/70" />
+        {/* Solid maroon background */}
+        <div className="absolute inset-0 bg-maroon" />
 
         {/* Branding content */}
         <div className="relative z-10 flex flex-col items-center gap-4 px-10 text-center">
-         
+          {/* Logo */}
+          <div className="bg-white rounded-3xl p-4 shadow-lg">
+            <img
+              src={logoUrl}
+              alt="ePRIME-RHU Logo"
+              className="w-28 h-28 object-contain"
+            />
+          </div>
           <h1 className="text-white text-4xl font-bold tracking-widest font-display">
             ePRIME-RHU
           </h1>
@@ -90,9 +93,9 @@ export default function LoginPage() {
           {/* Mobile-only logo */}
           <div className="flex flex-col items-center mb-8 md:hidden">
             <img
-              src="/pulic/logo.png"
+              src={logoUrl}
               alt="ePRIME-RHU"
-              className="w-20 h-20 object-contain mb-2"
+              className="w-20 h-20 object-contain mb-2 rounded-full"
             />
             <h1 className="text-maroon text-2xl font-bold font-display">ePRIME-RHU</h1>
             <p className="text-maroon-300 text-xs text-center mt-1">
