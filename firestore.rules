@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Check if user is authenticated
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Helper: Get user role from their profile document
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // Helper: Check specific roles
+    function isAdmin() {
+      return isAuth() && getUserRole() == 'Administrative Staff';
+    }
+
+    function isDoctor() {
+      return isAuth() && getUserRole() == 'Doctor';
+    }
+
+    function isNurse() {
+      return isAuth() && getUserRole() == 'Nurse';
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuth();
+      allow create: if isAdmin();
+      allow update: if isAdmin() || request.auth.uid == userId;
+      allow delete: if isAdmin();
+    }
+
+    // Patients collection
+    match /patients/{patientId} {
+      allow read: if isAuth();
+      allow create: if isNurse() || isAdmin();
+      allow update: if isAuth();
+      allow delete: if isAdmin();
+    }
+
+    // Medical Records collection
+    match /medicalRecords/{recordId} {
+      allow read: if isAuth();
+      allow create: if isDoctor() || isNurse();
+      allow update: if isDoctor() || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // System Logs collection
+    match /systemLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAuth();
+      allow update, delete: if false; // Logs are immutable
+    }
+
+    // Backups collection
+    match /backups/{backupId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+  }
+}
