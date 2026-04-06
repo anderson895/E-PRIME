@@ -4,6 +4,7 @@ import { useToast } from "@/contexts/ToastContext";
 import type { UserRole } from "@/types";
 import { User, Lock, Eye, EyeOff, Shield, Loader2, X, AlertCircle, Mail } from "lucide-react";
 import logoUrl from "@/logo.png";
+import bgUrl from "@/assets/mogpog-rhu.jpg"; 
 
 const roles: UserRole[] = ["Doctor", "Nurse", "Administrative Staff"];
 
@@ -56,35 +57,41 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-stretch">
 
       {/* ── Left panel — branding ── */}
-      <div className="hidden md:flex md:w-1/2 relative flex-col items-center justify-center overflow-hidden">
+      {/* ── Left panel — branding ── */}
+<div className="hidden md:flex md:w-1/2 relative flex-col items-center justify-center overflow-hidden">
 
-        {/* Solid maroon background */}
-        <div className="absolute inset-0 bg-maroon" />
+  {/* Building background photo */}
+  <div
+    className="absolute inset-0 bg-cover bg-center"
+    style={{ backgroundImage: `url(${bgUrl})` }}
+  />
 
-        {/* Branding content */}
-        <div className="relative z-10 flex flex-col items-center gap-4 px-10 text-center">
-          {/* Logo */}
-          <div className="bg-white rounded-3xl p-4 shadow-lg">
-            <img
-              src={logoUrl}
-              alt="ePRIME-RHU Logo"
-              className="w-28 h-28 object-contain"
-            />
-          </div>
-          <h1 className="text-white text-4xl font-bold tracking-widest font-display">
-            ePRIME-RHU
-          </h1>
-          <p className="text-white/80 text-sm leading-relaxed max-w-xs">
-            Electronic Patient Record Information<br />
-            and Management System For RHU<br />
-            <span className="font-semibold">Mogpog</span>
-          </p>
-          <div className="w-16 h-px bg-gold/60 my-1" />
-          <p className="text-gold text-sm italic tracking-[0.15em] font-semibold">
-            Efficient. Secure. Organized
-          </p>
-        </div>
-      </div>
+  {/* Dark maroon overlay so text stays readable */}
+  <div className="absolute inset-0 bg-maroon/75" />
+
+  {/* Branding content — unchanged */}
+  <div className="relative z-10 flex flex-col items-center gap-4 px-10 text-center">
+    <div className="bg-white rounded-3xl p-4 shadow-lg">
+      <img
+        src={logoUrl}
+        alt="ePRIME-RHU Logo"
+        className="w-28 h-28 object-contain"
+      />
+    </div>
+    <h1 className="text-white text-4xl font-bold tracking-widest font-display">
+      ePRIME-RHU
+    </h1>
+    <p className="text-white/80 text-sm leading-relaxed max-w-xs">
+      Electronic Patient Record Information<br />
+      and Management System For RHU<br />
+      <span className="font-semibold">Mogpog</span>
+    </p>
+    <div className="w-16 h-px bg-gold/60 my-1" />
+    <p className="text-gold text-sm italic tracking-[0.15em] font-semibold">
+      Efficient. Secure. Organized
+    </p>
+  </div>
+</div>
 
       {/* ── Right panel — login form ── */}
       <div className="w-full md:w-1/2 flex items-center justify-center bg-cream p-6">
