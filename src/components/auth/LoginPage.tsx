@@ -26,7 +26,8 @@ export default function LoginPage() {
       await login(email, password, role);
       addToast({ type: "success", title: "Welcome!", message: "Login successful." });
     } catch {
-      // error is displayed via context
+      // error is displayed via context; clear only the password
+      setPassword("");
     }
   };
 
@@ -119,7 +120,7 @@ export default function LoginPage() {
               <User size={17} className="text-gray-400 flex-shrink-0" />
               <input
                 type="email"
-                placeholder="Username"
+                placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 py-3 px-2.5 text-sm outline-none bg-transparent placeholder:text-gray-400"

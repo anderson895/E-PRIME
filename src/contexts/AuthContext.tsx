@@ -11,7 +11,8 @@ import { addSystemLog } from "@/services/adminService";
 
 interface AuthContextType {
   user: UserAccount | null;
-  loading: boolean;
+  initializing: boolean; // true only during the first Firebase auth check
+  loading: boolean;      // true only while a login attempt is in progress
   error: string | null;
   login: (email: string, password: string, role: UserRole) => Promise<void>;
   logout: () => Promise<void>;
@@ -23,10 +24,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserAccount | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(true); // first auth check only
+  const [loading, setLoading] = useState(false);          // login button spinner
   const [error, setError] = useState<string | null>(null);
 
-  // Listen for auth state changes
+  // Listen for auth state changes (runs once on mount)
   useEffect(() => {
     const unsubscribe = onAuthChange(async (firebaseUser) => {
       if (firebaseUser) {
@@ -39,19 +41,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         setUser(null);
       }
-      setLoading(false);
+      setInitializing(false);
     });
     return unsubscribe;
   }, []);
 
   const login = useCallback(
     async (email: string, password: string, role: UserRole) => {
-      setLoading(true);
+      setLoading(true); // only spins the button, does NOT show full-screen loader
       setError(null);
       try {
         const account = await loginUser(email, password, role);
         setUser(account);
-        // Log the login event
         await addSystemLog({
           userId: account.uid,
           userName: account.displayName,
@@ -101,7 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, login, logout, forgotPassword, clearError }}
+      value={{ user, initializing, loading, error, login, logout, forgotPassword, clearError }}
     >
       {children}
     </AuthContext.Provider>

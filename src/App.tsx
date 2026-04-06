@@ -14,11 +14,12 @@ import BackupPage from "@/components/admin/BackupPage";
 import { Loader2 } from "lucide-react";
 
 function AppContent() {
-  const { user, loading } = useAuth();
+  const { user, initializing } = useAuth();
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // Loading state while checking auth
-  if (loading) {
+  // Show full-screen loader ONLY during the initial Firebase auth check.
+  // Login-attempt loading is handled inside LoginPage itself via the `loading` flag.
+  if (initializing) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-cream">
         <div className="text-center">
