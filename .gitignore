@@ -2,3 +2,5 @@
 /node_modules/
 /dist/
 /build/
+/scripts/
+.DS_Store
