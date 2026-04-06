@@ -41,10 +41,13 @@ export default function RecordsPage() {
     return matchesSearch && matchesStatus;
   });
 
+  const inputClass =
+    "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-red-800 focus:outline-none focus:ring-1 focus:ring-red-800";
+
   if (loading) {
     return (
       <div className="flex justify-center py-16">
-        <Loader2 className="w-8 h-8 animate-spin text-maroon" />
+        <Loader2 className="w-8 h-8 animate-spin text-red-900" />
       </div>
     );
   }
@@ -54,18 +57,18 @@ export default function RecordsPage() {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-maroon-200" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             placeholder="Search by record ID, patient, diagnosis..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="input-field pl-10"
+            className={`${inputClass} pl-10`}
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="input-field w-auto min-w-[140px]"
+          className={`${inputClass} w-auto min-w-[140px]`}
         >
           <option value="all">All Status</option>
           <option value="Completed">Completed</option>
@@ -75,93 +78,103 @@ export default function RecordsPage() {
       </div>
 
       {/* Records Table */}
-      <div className="section-card overflow-hidden">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 overflow-hidden">
         <div className="overflow-x-auto -mx-6 -mt-6">
-          <table className="data-table min-w-[800px] mx-6 mt-6">
+          <table className="min-w-[800px] w-full mx-6 mt-6 text-sm">
             <thead>
-              <tr>
-                <th>Record ID</th>
-                <th>Date</th>
-                <th>Patient</th>
-                <th>Doctor</th>
-                <th>Diagnosis</th>
-                <th>Status</th>
-                <th className="text-right">Action</th>
+              <tr className="border-b border-gray-200 text-left">
+                <th className="pb-3 pr-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Record ID</th>
+                <th className="pb-3 pr-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Date</th>
+                <th className="pb-3 pr-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Patient</th>
+                <th className="pb-3 pr-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Doctor</th>
+                <th className="pb-3 pr-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Diagnosis</th>
+                <th className="pb-3 pr-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+                <th className="pb-3 text-xs font-semibold text-gray-500 uppercase tracking-wide text-right">Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y divide-gray-100">
               {filtered.map((r) => {
                 const p = getPatient(r.patientId);
                 const isExpanded = expandedId === r.id;
                 return (
                   <React.Fragment key={r.id}>
-                    <tr className="cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : r.id)}>
-                      <td className="font-mono text-xs font-semibold text-maroon">{r.recordId}</td>
-                      <td>{r.date}</td>
-                      <td className="font-medium">{p ? `${p.lastName}, ${p.firstName}` : "—"}</td>
-                      <td className="text-maroon-300">{r.doctorName}</td>
-                      <td className="max-w-[200px] truncate">{r.diagnosis}</td>
-                      <td>
-                        <span className={`badge ${r.status === "Completed" ? "badge-success" : r.status === "Pending" ? "badge-warning" : "badge-info"}`}>
+                    <tr
+                      className="hover:bg-gray-50 cursor-pointer transition-colors"
+                      onClick={() => setExpandedId(isExpanded ? null : r.id)}
+                    >
+                      <td className="py-3 pr-4 font-mono text-xs font-semibold text-red-900">{r.recordId}</td>
+                      <td className="py-3 pr-4 text-gray-700">{r.date}</td>
+                      <td className="py-3 pr-4 font-medium text-gray-900">{p ? `${p.lastName}, ${p.firstName}` : "—"}</td>
+                      <td className="py-3 pr-4 text-gray-600">{r.doctorName}</td>
+                      <td className="py-3 pr-4 max-w-[200px] truncate text-gray-700">{r.diagnosis}</td>
+                      <td className="py-3 pr-4">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          r.status === "Completed"
+                            ? "bg-emerald-100 text-emerald-800"
+                            : r.status === "Pending"
+                            ? "bg-amber-100 text-amber-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}>
                           {r.status}
                         </span>
                       </td>
-                      <td className="text-right">
-                        <button className="btn-ghost text-xs py-1 px-2">
+                      <td className="py-3 text-right">
+                        <button className="inline-flex items-center justify-center p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
                           <Eye size={14} />
                         </button>
                       </td>
                     </tr>
+
                     {isExpanded && (
                       <tr>
-                        <td colSpan={7} className="!p-4 bg-maroon-50/30">
+                        <td colSpan={7} className="bg-gray-50 px-4 py-4 border-b border-gray-200">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <p className="font-semibold text-maroon mb-1">Chief Complaint</p>
-                              <p className="text-maroon-300">{r.chiefComplaint || "—"}</p>
-
-                              <p className="font-semibold text-maroon mb-1 mt-3">Diagnosis</p>
-                              <p className="text-maroon-300">{r.diagnosis}</p>
-
-                              <p className="font-semibold text-maroon mb-1 mt-3">Treatment</p>
-                              <p className="text-maroon-300">{r.treatment}</p>
-
-                              {r.prescription && (
+                            <div className="space-y-1">
+                              {r.chiefComplaint && (
                                 <>
-                                  <p className="font-semibold text-maroon mb-1 mt-3">Prescription</p>
-                                  <p className="text-maroon-300">{r.prescription}</p>
+                                  <p className="font-semibold text-red-900 mb-1">Chief Complaint</p>
+                                  <p className="text-gray-600">{r.chiefComplaint}</p>
                                 </>
                               )}
-
+                              <p className="font-semibold text-red-900 mb-1 mt-3">Diagnosis</p>
+                              <p className="text-gray-600">{r.diagnosis}</p>
+                              <p className="font-semibold text-red-900 mb-1 mt-3">Treatment</p>
+                              <p className="text-gray-600">{r.treatment || "—"}</p>
+                              {r.prescription && (
+                                <>
+                                  <p className="font-semibold text-red-900 mb-1 mt-3">Prescription</p>
+                                  <p className="text-gray-600">{r.prescription}</p>
+                                </>
+                              )}
                               {r.notes && (
                                 <>
-                                  <p className="font-semibold text-maroon mb-1 mt-3">Notes</p>
-                                  <p className="text-maroon-300 italic">{r.notes}</p>
+                                  <p className="font-semibold text-red-900 mb-1 mt-3">Notes</p>
+                                  <p className="text-gray-600 italic">{r.notes}</p>
                                 </>
                               )}
                             </div>
+
                             <div>
-                              <p className="font-semibold text-maroon mb-2">Vitals</p>
+                              <p className="font-semibold text-red-900 mb-2">Vitals</p>
                               <div className="grid grid-cols-2 gap-2">
                                 {[
-                                  ["Blood Pressure", r.vitals.bloodPressure],
-                                  ["Heart Rate", `${r.vitals.heartRate} bpm`],
-                                  ["Temperature", r.vitals.temperature],
-                                  ["Resp. Rate", `${r.vitals.respiratoryRate}/min`],
-                                  ["Weight", r.vitals.weight],
-                                  ["Height", r.vitals.height || "—"],
-                                  ["SpO2", r.vitals.oxygenSaturation || "—"],
+                                  ["Blood Pressure", r.vitals?.bloodPressure],
+                                  ["Heart Rate", r.vitals?.heartRate ? `${r.vitals.heartRate} bpm` : "—"],
+                                  ["Temperature", r.vitals?.temperature],
+                                  ["Resp. Rate", r.vitals?.respiratoryRate ? `${r.vitals.respiratoryRate}/min` : "—"],
+                                  ["Weight", r.vitals?.weight],
+                                  ["Height", r.vitals?.height || "—"],
+                                  ["SpO2", r.vitals?.oxygenSaturation || "—"],
                                 ].map(([label, value]) => (
-                                  <div key={label} className="bg-white rounded-lg p-2.5 border border-maroon-50">
-                                    <p className="text-[10px] text-maroon-200 uppercase tracking-wider">{label}</p>
-                                    <p className="font-semibold text-maroon">{value}</p>
+                                  <div key={label} className="bg-white rounded-lg p-2.5 border border-gray-200">
+                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider">{label}</p>
+                                    <p className="font-semibold text-gray-800 mt-0.5">{value || "—"}</p>
                                   </div>
                                 ))}
                               </div>
-
                               {r.followUpDate && (
-                                <div className="mt-3 p-2.5 bg-gold-50 border border-gold-200 rounded-lg">
-                                  <p className="text-xs text-gold-700 font-semibold">
+                                <div className="mt-3 p-2.5 bg-amber-50 border border-amber-200 rounded-lg">
+                                  <p className="text-xs text-amber-800 font-semibold">
                                     Follow-up: {r.followUpDate}
                                   </p>
                                 </div>
@@ -178,7 +191,7 @@ export default function RecordsPage() {
           </table>
 
           {filtered.length === 0 && (
-            <div className="text-center py-12 text-maroon-200">
+            <div className="text-center py-12 text-gray-400">
               <FileText size={48} className="mx-auto mb-3 opacity-30" />
               <p className="font-medium">No records found</p>
             </div>

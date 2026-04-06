@@ -21,6 +21,11 @@ interface Props {
   onViewPatient?: (patient: Patient) => void;
 }
 
+const inputClass =
+  "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-red-800 focus:outline-none focus:ring-1 focus:ring-red-800";
+
+const cardClass = "bg-white rounded-xl border border-gray-200 shadow-sm p-5";
+
 export default function PatientsPage({ onViewPatient }: Props) {
   const { user } = useAuth();
   const { addToast } = useToast();
@@ -73,18 +78,18 @@ export default function PatientsPage({ onViewPatient }: Props) {
       {/* Search & Actions */}
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="flex-1 relative">
-          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-maroon-200" />
+          <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             placeholder="Search by name, ID, or contact..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input-field pl-10"
+            className={`${inputClass} pl-10`}
           />
         </div>
         {canRegister && (
           <button
             onClick={() => { setEditingPatient(null); setShowForm(true); }}
-            className="btn-primary whitespace-nowrap"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-900 text-white text-sm font-semibold hover:bg-red-800 transition-colors whitespace-nowrap"
           >
             <UserPlus size={16} />
             Register Patient
@@ -104,18 +109,18 @@ export default function PatientsPage({ onViewPatient }: Props) {
       {/* Patient Cards */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <Loader2 className="w-8 h-8 animate-spin text-maroon" />
+          <Loader2 className="w-8 h-8 animate-spin text-red-900" />
         </div>
       ) : (
         <div className="space-y-2">
           {filtered.map((p) => (
             <div
               key={p.id}
-              className="section-card !p-4 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow group border-l-4 border-l-maroon"
+              className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow group border-l-4 border-l-red-900"
               onClick={() => setViewingPatient(p)}
             >
               {/* Avatar */}
-              <div className="w-11 h-11 rounded-full bg-maroon/10 flex items-center justify-center text-maroon font-bold text-sm flex-shrink-0">
+              <div className="w-11 h-11 rounded-full bg-red-100 flex items-center justify-center text-red-900 font-bold text-sm flex-shrink-0">
                 {p.photoURL ? (
                   <img src={getCloudinaryThumbnail(p.photoURL, 44, 44)} className="w-11 h-11 rounded-full object-cover" alt="" />
                 ) : (
@@ -125,10 +130,10 @@ export default function PatientsPage({ onViewPatient }: Props) {
 
               {/* Info */}
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-maroon-800 group-hover:text-maroon transition-colors">
+                <p className="font-semibold text-gray-900 group-hover:text-red-900 transition-colors">
                   {p.lastName}, {p.firstName} {p.middleName}
                 </p>
-                <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-maroon-200 mt-0.5">
+                <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-gray-500 mt-0.5">
                   <span className="font-mono">{p.patientId}</span>
                   <span>{p.gender}</span>
                   <span>{p.dateOfBirth}</span>
@@ -139,18 +144,22 @@ export default function PatientsPage({ onViewPatient }: Props) {
               </div>
 
               {/* Status & Action */}
-              <span className={`badge flex-shrink-0 ${p.status === "Active" ? "badge-success" : "badge-danger"}`}>
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${
+                p.status === "Active"
+                  ? "bg-emerald-100 text-emerald-800"
+                  : "bg-red-100 text-red-800"
+              }`}>
                 {p.status}
               </span>
-              <Eye size={18} className="text-maroon-200 group-hover:text-maroon transition-colors flex-shrink-0" />
+              <Eye size={18} className="text-gray-400 group-hover:text-red-900 transition-colors flex-shrink-0" />
             </div>
           ))}
 
           {filtered.length === 0 && (
-            <div className="text-center py-16 text-maroon-200">
+            <div className="text-center py-16 text-gray-400">
               <Users size={48} className="mx-auto mb-3 opacity-30" />
-              <p className="font-medium">No patients found</p>
-              <p className="text-xs mt-1">
+              <p className="font-medium text-gray-500">No patients found</p>
+              <p className="text-xs mt-1 text-gray-400">
                 {searchTerm ? "Try a different search term" : "Register a new patient to get started"}
               </p>
             </div>
@@ -208,18 +217,15 @@ function PatientForm({ patient, onClose, onSaved }: FormProps) {
     try {
       let photoURL = patient?.photoURL || "";
 
-      // Upload photo to Cloudinary if selected
       if (photoFile) {
         const result = await uploadToCloudinary(photoFile, "patients");
         photoURL = result.url;
       }
 
       if (patient) {
-        // Update
         await updatePatient(patient.id, { ...form, photoURL });
         addToast({ type: "success", title: "Patient updated successfully" });
       } else {
-        // Create
         await createPatient({
           ...form,
           photoURL,
@@ -265,29 +271,29 @@ function PatientForm({ patient, onClose, onSaved }: FormProps) {
   ];
 
   return (
-    <div className="section-card">
+    <div className={cardClass}>
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-lg font-bold text-maroon font-display">
+        <h3 className="text-lg font-bold text-red-900">
           {patient ? "Edit Patient" : "New Patient Registration"}
         </h3>
-        <button onClick={onClose} className="text-maroon-200 hover:text-maroon">
+        <button onClick={onClose} className="text-gray-400 hover:text-gray-700 transition-colors">
           <X size={20} />
         </button>
       </div>
 
       {/* Photo Upload */}
-      <div className="flex items-center gap-4 mb-5 pb-5 border-b border-maroon-50">
-        <div className="w-16 h-16 rounded-full bg-maroon/10 flex items-center justify-center overflow-hidden">
+      <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-200">
+        <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center overflow-hidden">
           {photoFile ? (
             <img src={URL.createObjectURL(photoFile)} className="w-16 h-16 object-cover" alt="" />
           ) : patient?.photoURL ? (
             <img src={patient.photoURL} className="w-16 h-16 object-cover" alt="" />
           ) : (
-            <Camera size={24} className="text-maroon-200" />
+            <Camera size={24} className="text-gray-400" />
           )}
         </div>
         <div>
-          <label className="btn-ghost cursor-pointer text-xs">
+          <label className="inline-flex items-center gap-1.5 cursor-pointer text-xs font-medium text-gray-600 border border-gray-300 rounded-lg px-3 py-1.5 hover:bg-gray-50 transition-colors">
             <Camera size={14} />
             {photoFile ? "Change Photo" : "Upload Photo"}
             <input
@@ -297,33 +303,33 @@ function PatientForm({ patient, onClose, onSaved }: FormProps) {
               onChange={(e) => e.target.files?.[0] && setPhotoFile(e.target.files[0])}
             />
           </label>
-          <p className="text-[10px] text-maroon-200 mt-1">JPG, PNG. Max 5MB. Stored on Cloudinary.</p>
+          <p className="text-[10px] text-gray-400 mt-1">JPG, PNG. Max 5MB. Stored on Cloudinary.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {fields.map(([label, key, type, required]) => (
           <div key={key}>
-            <label className="text-xs font-semibold text-maroon-300 mb-1 block">
+            <label className="text-xs font-semibold text-gray-600 mb-1 block">
               {label} {required && <span className="text-red-500">*</span>}
             </label>
             <input
               type={type}
               value={(form as any)[key]}
               onChange={(e) => set(key, e.target.value)}
-              className="input-field"
+              className={inputClass}
             />
           </div>
         ))}
 
         <div>
-          <label className="text-xs font-semibold text-maroon-300 mb-1 block">
+          <label className="text-xs font-semibold text-gray-600 mb-1 block">
             Gender <span className="text-red-500">*</span>
           </label>
           <select
             value={form.gender}
             onChange={(e) => set("gender", e.target.value)}
-            className="input-field"
+            className={inputClass}
           >
             <option>Male</option>
             <option>Female</option>
@@ -331,13 +337,11 @@ function PatientForm({ patient, onClose, onSaved }: FormProps) {
         </div>
 
         <div>
-          <label className="text-xs font-semibold text-maroon-300 mb-1 block">
-            Civil Status
-          </label>
+          <label className="text-xs font-semibold text-gray-600 mb-1 block">Civil Status</label>
           <select
             value={form.civilStatus}
             onChange={(e) => set("civilStatus", e.target.value)}
-            className="input-field"
+            className={inputClass}
           >
             <option>Single</option>
             <option>Married</option>
@@ -347,11 +351,18 @@ function PatientForm({ patient, onClose, onSaved }: FormProps) {
         </div>
       </div>
 
-      <div className="flex gap-3 mt-6 pt-4 border-t border-maroon-50 justify-end">
-        <button onClick={onClose} className="btn-ghost">
+      <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200 justify-end">
+        <button
+          onClick={onClose}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
           Cancel
         </button>
-        <button onClick={handleSave} disabled={saving} className="btn-primary">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-900 text-white text-sm font-semibold hover:bg-red-800 disabled:opacity-60 transition-colors"
+        >
           {saving ? (
             <><Loader2 size={16} className="animate-spin" /> Saving...</>
           ) : patient ? (
@@ -386,34 +397,44 @@ function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
 
   return (
     <div className="space-y-4">
-      <button onClick={onBack} className="btn-ghost px-0 text-maroon">
+      <button
+        onClick={onBack}
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-red-900 hover:text-red-700 transition-colors px-0"
+      >
         <ChevronLeft size={16} /> Back to Patient List
       </button>
 
       {/* Header */}
-      <div className="section-card">
+      <div className={cardClass}>
         <div className="flex flex-wrap items-center gap-5">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-maroon to-maroon-600 flex items-center justify-center text-white font-bold text-xl flex-shrink-0">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-red-900 to-red-700 flex items-center justify-center text-white font-bold text-xl flex-shrink-0 overflow-hidden">
             {patient.photoURL ? (
               <img src={patient.photoURL} className="w-16 h-16 rounded-full object-cover" alt="" />
             ) : initials}
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-maroon font-display">
+            <h2 className="text-xl font-bold text-red-900">
               {patient.lastName}, {patient.firstName} {patient.middleName} {patient.suffix}
             </h2>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-maroon-300 mt-1">
-              <span className="font-mono text-xs font-semibold">{patient.patientId}</span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-500 mt-1">
+              <span className="font-mono text-xs font-semibold text-gray-700">{patient.patientId}</span>
               <span>{patient.gender}</span>
               <span>DOB: {patient.dateOfBirth}</span>
               <span className="flex items-center gap-1"><Droplets size={12} /> {patient.bloodType}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className={`badge ${patient.status === "Active" ? "badge-success" : "badge-danger"}`}>
+            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              patient.status === "Active"
+                ? "bg-emerald-100 text-emerald-800"
+                : "bg-red-100 text-red-800"
+            }`}>
               {patient.status}
             </span>
-            <button onClick={() => onEdit(patient)} className="btn-ghost text-xs">
+            <button
+              onClick={() => onEdit(patient)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
               <Edit size={14} /> Edit
             </button>
           </div>
@@ -421,20 +442,23 @@ function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-white rounded-xl p-1 shadow-sm border border-maroon-50">
+      <div className="flex gap-1 bg-white rounded-xl p-1 shadow-sm border border-gray-200">
         {(["info", "history", "vitals"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`flex-1 py-2.5 text-sm rounded-lg font-medium transition-all capitalize
-              ${tab === t ? "bg-maroon text-white shadow-sm" : "text-maroon-300 hover:text-maroon hover:bg-maroon-50"}`}
+            className={`flex-1 py-2.5 text-sm rounded-lg font-medium transition-all capitalize ${
+              tab === t
+                ? "bg-red-900 text-white shadow-sm"
+                : "text-gray-500 hover:text-red-900 hover:bg-red-50"
+            }`}
           >
             {t === "info" ? "Personal Info" : t === "history" ? "Medical History" : "Vitals"}
           </button>
         ))}
       </div>
 
-      <div className="section-card">
+      <div className={cardClass}>
         {tab === "info" && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {[
@@ -448,10 +472,10 @@ function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
               ["Registered", patient.registeredDate, <Calendar size={14} key="r" />],
             ].map(([label, value, icon]) => (
               <div key={label as string}>
-                <div className="flex items-center gap-1.5 text-[11px] text-maroon-200 font-semibold uppercase tracking-wider mb-1">
+                <div className="flex items-center gap-1.5 text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1">
                   {icon} {label as string}
                 </div>
-                <p className="text-sm text-maroon-800">{value as string}</p>
+                <p className="text-sm text-gray-800">{value as string}</p>
               </div>
             ))}
           </div>
@@ -459,21 +483,31 @@ function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
 
         {tab === "history" && (
           records.length === 0 ? (
-            <p className="text-center text-maroon-200 py-8">No medical records found.</p>
+            <p className="text-center text-gray-400 py-8">No medical records found.</p>
           ) : (
             <div className="space-y-4">
               {records.map((r) => (
-                <div key={r.id} className="border border-maroon-50 rounded-xl p-4">
+                <div key={r.id} className="border border-gray-200 rounded-xl p-4">
                   <div className="flex justify-between flex-wrap gap-2 mb-2">
-                    <span className="font-semibold text-maroon text-sm">{r.date} — {r.recordId}</span>
-                    <span className="text-xs text-maroon-200">{r.doctorName}</span>
+                    <span className="font-semibold text-red-900 text-sm">{r.date} — {r.recordId}</span>
+                    <span className="text-xs text-gray-400">{r.doctorName}</span>
                   </div>
-                  <p className="text-sm"><strong className="text-maroon-300">Complaint:</strong> {r.chiefComplaint}</p>
-                  <p className="text-sm mt-1"><strong className="text-maroon-300">Diagnosis:</strong> {r.diagnosis}</p>
-                  <p className="text-sm mt-1"><strong className="text-maroon-300">Treatment:</strong> {r.treatment}</p>
-                  {r.prescription && <p className="text-sm mt-1"><strong className="text-maroon-300">Rx:</strong> {r.prescription}</p>}
-                  {r.notes && <p className="text-xs text-maroon-200 mt-2 italic">{r.notes}</p>}
-                  <span className={`badge mt-2 ${r.status === "Completed" ? "badge-success" : "badge-warning"}`}>{r.status}</span>
+                  <p className="text-sm text-gray-700"><strong className="text-gray-600">Complaint:</strong> {r.chiefComplaint}</p>
+                  <p className="text-sm text-gray-700 mt-1"><strong className="text-gray-600">Diagnosis:</strong> {r.diagnosis}</p>
+                  <p className="text-sm text-gray-700 mt-1"><strong className="text-gray-600">Treatment:</strong> {r.treatment}</p>
+                  {r.prescription && (
+                    <p className="text-sm text-gray-700 mt-1"><strong className="text-gray-600">Rx:</strong> {r.prescription}</p>
+                  )}
+                  {r.notes && (
+                    <p className="text-xs text-gray-400 mt-2 italic">{r.notes}</p>
+                  )}
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mt-2 ${
+                    r.status === "Completed"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : "bg-amber-100 text-amber-800"
+                  }`}>
+                    {r.status}
+                  </span>
                 </div>
               ))}
             </div>
@@ -482,26 +516,28 @@ function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
 
         {tab === "vitals" && (
           records.length === 0 ? (
-            <p className="text-center text-maroon-200 py-8">No vitals recorded.</p>
+            <p className="text-center text-gray-400 py-8">No vitals recorded.</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="data-table">
+              <table className="min-w-full text-sm">
                 <thead>
-                  <tr>
-                    <th>Date</th><th>BP</th><th>HR</th><th>Temp</th><th>RR</th><th>Weight</th><th>Height</th><th>SpO2</th>
+                  <tr className="border-b border-gray-200 text-left">
+                    {["Date","BP","HR","Temp","RR","Weight","Height","SpO2"].map((h) => (
+                      <th key={h} className="pb-2 pr-4 text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                    ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-gray-100">
                   {records.map((r) => (
-                    <tr key={r.id}>
-                      <td>{r.date}</td>
-                      <td>{r.vitals.bloodPressure}</td>
-                      <td>{r.vitals.heartRate} bpm</td>
-                      <td>{r.vitals.temperature}</td>
-                      <td>{r.vitals.respiratoryRate}/min</td>
-                      <td>{r.vitals.weight}</td>
-                      <td>{r.vitals.height || "—"}</td>
-                      <td>{r.vitals.oxygenSaturation || "—"}</td>
+                    <tr key={r.id} className="text-gray-700">
+                      <td className="py-2 pr-4">{r.date}</td>
+                      <td className="py-2 pr-4">{r.vitals.bloodPressure}</td>
+                      <td className="py-2 pr-4">{r.vitals.heartRate} bpm</td>
+                      <td className="py-2 pr-4">{r.vitals.temperature}</td>
+                      <td className="py-2 pr-4">{r.vitals.respiratoryRate}/min</td>
+                      <td className="py-2 pr-4">{r.vitals.weight}</td>
+                      <td className="py-2 pr-4">{r.vitals.height || "—"}</td>
+                      <td className="py-2 pr-4">{r.vitals.oxygenSaturation || "—"}</td>
                     </tr>
                   ))}
                 </tbody>
