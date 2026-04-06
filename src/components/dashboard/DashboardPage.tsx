@@ -84,7 +84,7 @@ export default function DashboardPage() {
             <h2 className="text-2xl font-display font-bold">
               Welcome back, {user?.displayName?.split(" ")[0]}
             </h2>
-            <p className="text-white/70 text-sm mt-1">
+            <p className="text-white/80 text-sm mt-1">
               Here's what's happening at RHU Mogpog today.
             </p>
           </div>
@@ -98,10 +98,10 @@ export default function DashboardPage() {
           <div key={i} className="stat-card group cursor-default">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs text-maroon-200 font-semibold uppercase tracking-wider">
+                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
                   {s.label}
                 </p>
-                <p className="text-3xl font-bold text-maroon-800 mt-1">
+                <p className="text-3xl font-bold text-gray-900 mt-1">
                   {s.value}
                 </p>
               </div>
@@ -147,14 +147,14 @@ export default function DashboardPage() {
                     <td className="font-mono text-xs font-semibold text-maroon">
                       {r.recordId}
                     </td>
-                    <td className="text-maroon-300">{r.date}</td>
-                    <td className="font-medium">
+                    <td className="text-gray-600">{r.date}</td>
+                    <td className="font-medium text-gray-800">
                       {p ? `${p.lastName}, ${p.firstName}` : "—"}
                     </td>
-                    <td className="max-w-[220px] truncate text-maroon-300">
+                    <td className="max-w-[220px] truncate text-gray-600">
                       {r.diagnosis}
                     </td>
-                    <td className="text-maroon-300">{r.doctorName}</td>
+                    <td className="text-gray-600">{r.doctorName}</td>
                     <td>
                       <span
                         className={`badge ${
@@ -174,7 +174,7 @@ export default function DashboardPage() {
             </tbody>
           </table>
           {records.length === 0 && (
-            <p className="text-center text-maroon-200 py-8 text-sm">
+            <p className="text-center text-gray-500 py-8 text-sm">
               No consultations recorded yet.
             </p>
           )}
@@ -202,12 +202,12 @@ export default function DashboardPage() {
                 {sorted.map(([diag, count]) => (
                   <div key={diag}>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-maroon-300 truncate max-w-[80%]">
+                      <span className="text-gray-600 truncate max-w-[80%]">
                         {diag}
                       </span>
-                      <span className="font-bold text-maroon">{count}</span>
+                      <span className="font-bold text-gray-800">{count}</span>
                     </div>
-                    <div className="h-2 rounded-full bg-maroon-50">
+                    <div className="h-2 rounded-full bg-gray-100">
                       <div
                         className="h-2 rounded-full bg-gradient-to-r from-maroon to-maroon-500 transition-all duration-500"
                         style={{ width: `${(count / max) * 100}%` }}
@@ -217,7 +217,7 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-maroon-200 text-sm">No data yet.</p>
+              <p className="text-gray-500 text-sm">No data yet.</p>
             );
           })()}
         </div>
@@ -241,12 +241,12 @@ export default function DashboardPage() {
             ].map((d) => (
               <div key={d.label}>
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-maroon-300">{d.label}</span>
-                  <span className="font-bold text-maroon">
+                  <span className="text-gray-600">{d.label}</span>
+                  <span className="font-bold text-gray-800">
                     {d.val} ({patients.length ? Math.round((d.val / patients.length) * 100) : 0}%)
                   </span>
                 </div>
-                <div className="h-2 rounded-full bg-maroon-50">
+                <div className="h-2 rounded-full bg-gray-100">
                   <div
                     className={`h-2 rounded-full ${d.color} transition-all duration-500`}
                     style={{
@@ -257,18 +257,18 @@ export default function DashboardPage() {
               </div>
             ))}
 
-            <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-maroon-50">
-              <div className="p-3 bg-maroon-50/50 rounded-lg text-center">
+            <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-200">
+              <div className="p-3 bg-gray-50 rounded-lg text-center">
                 <p className="text-2xl font-bold text-maroon">
                   {patients.filter((p) => p.status === "Active").length}
                 </p>
-                <p className="text-[11px] text-maroon-200 font-medium">Active</p>
+                <p className="text-[11px] text-gray-500 font-medium">Active</p>
               </div>
-              <div className="p-3 bg-maroon-50/50 rounded-lg text-center">
+              <div className="p-3 bg-gray-50 rounded-lg text-center">
                 <p className="text-2xl font-bold text-maroon">
                   {patients.filter((p) => p.status === "Inactive").length}
                 </p>
-                <p className="text-[11px] text-maroon-200 font-medium">Inactive</p>
+                <p className="text-[11px] text-gray-500 font-medium">Inactive</p>
               </div>
             </div>
           </div>
