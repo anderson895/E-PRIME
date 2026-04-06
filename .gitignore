@@ -1,7 +1,5 @@
 /*.env
 .env.local
 /node_modules/
-/dist/
-/build/
 /scripts/
 .DS_Store
