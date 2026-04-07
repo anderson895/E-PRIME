@@ -44,6 +44,9 @@ export default function RecordsPage() {
   const inputClass =
     "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-red-800 focus:outline-none focus:ring-1 focus:ring-red-800";
 
+  const selectClass =
+    "rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:border-red-800 focus:outline-none focus:ring-1 focus:ring-red-800 w-full sm:w-auto sm:min-w-[160px] shrink-0";
+
   if (loading) {
     return (
       <div className="flex justify-center py-16">
@@ -68,7 +71,7 @@ export default function RecordsPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className={`${inputClass} w-auto min-w-[140px]`}
+          className={selectClass}
         >
           <option value="all">All Status</option>
           <option value="Completed">Completed</option>

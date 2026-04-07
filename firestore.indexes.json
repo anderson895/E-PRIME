@@ -1,0 +1,21 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "medicalRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "patientId", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "medicalRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "doctorId", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

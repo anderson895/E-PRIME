@@ -386,10 +386,23 @@ interface ProfileProps {
 function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
   const [tab, setTab] = useState<"info" | "history" | "vitals">("info");
   const [records, setRecords] = useState<import("@/types").MedicalRecord[]>([]);
+  const [recordsLoading, setRecordsLoading] = useState(true);
+  const [recordsError, setRecordsError] = useState<string | null>(null);
 
   useEffect(() => {
+    setRecordsLoading(true);
+    setRecordsError(null);
     import("@/services/recordService").then(({ getPatientRecords }) => {
-      getPatientRecords(patient.id).then(setRecords).catch(() => {});
+      getPatientRecords(patient.id)
+        .then((data) => {
+          setRecords(data);
+          setRecordsLoading(false);
+        })
+        .catch((err) => {
+          console.error("Failed to load patient records:", err);
+          setRecordsError("Failed to load records. Please try again.");
+          setRecordsLoading(false);
+        });
     });
   }, [patient.id]);
 
@@ -482,7 +495,11 @@ function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
         )}
 
         {tab === "history" && (
-          records.length === 0 ? (
+          recordsLoading ? (
+            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-red-900" /></div>
+          ) : recordsError ? (
+            <p className="text-center text-red-500 py-8">{recordsError}</p>
+          ) : records.length === 0 ? (
             <p className="text-center text-gray-400 py-8">No medical records found.</p>
           ) : (
             <div className="space-y-4">
@@ -515,7 +532,11 @@ function PatientProfile({ patient, onBack, onEdit }: ProfileProps) {
         )}
 
         {tab === "vitals" && (
-          records.length === 0 ? (
+          recordsLoading ? (
+            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-red-900" /></div>
+          ) : recordsError ? (
+            <p className="text-center text-red-500 py-8">{recordsError}</p>
+          ) : records.length === 0 ? (
             <p className="text-center text-gray-400 py-8">No vitals recorded.</p>
           ) : (
             <div className="overflow-x-auto">
