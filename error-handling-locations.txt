@@ -1,0 +1,120 @@
+============================================================
+  ePRIME-RHU — ERROR HANDLING & LOGGING FILE LOCATIONS
+============================================================
+
+----------------------------------------------------------------
+1. src/utils/logger.ts
+----------------------------------------------------------------
+   - Central logging utility ng buong app
+   - Dito defined ang logger object:
+       logger.info()
+       logger.warn()
+       logger.error()
+   - Dito din ang translateFirebaseError()
+   - Lahat ng ibang files nag-iimport dito
+
+----------------------------------------------------------------
+2. src/main.tsx
+----------------------------------------------------------------
+   - Global error catchers para sa buong app
+   - window.onerror         -> uncaught JS errors
+   - unhandledrejection     -> Promise rejections na walang .catch()
+
+----------------------------------------------------------------
+3. src/components/common/ErrorBoundary.tsx
+----------------------------------------------------------------
+   - React Error Boundary
+   - Nag-c-catch ng errors sa loob ng component tree
+   - Tinatawagan ang logger.error()
+
+----------------------------------------------------------------
+4. SERVICES — may logger.error / logger.info / logger.warn
+----------------------------------------------------------------
+
+   src/services/authService.ts
+      - loginUser
+      - logoutUser
+      - registerUser
+      - resetPassword
+      - getUserProfile
+      - updateUserProfile
+
+   src/services/patientService.ts
+      - generatePatientId
+      - createPatient
+      - getAllPatients
+      - getPatientById
+      - searchPatients
+      - updatePatient
+      - deactivatePatient
+      - subscribeToPatients
+      - getPatientStats
+
+   src/services/recordService.ts
+      - generateRecordId
+      - createMedicalRecord
+      - getAllRecords
+      - getPatientRecords
+      - getDoctorRecords
+      - updateMedicalRecord
+      - subscribeToRecords
+      - getRecordsByDateRange
+      - getDiagnosisStats
+
+   src/services/adminService.ts
+      - addSystemLog
+      - getSystemLogs
+      - subscribeToLogs
+      - getAllUsers
+      - updateUserAccount
+      - deactivateUser
+      - activateUser
+      - createBackupRecord
+      - getBackupRecords
+
+   src/services/emailService.ts
+      - callSendPasswordResetEmail
+      - callSendNotificationEmail
+      - callSendAppointmentReminder
+
+----------------------------------------------------------------
+5. COMPONENTS — try/catch lang, WALANG logger
+----------------------------------------------------------------
+
+   src/components/dashboard/DashboardPage.tsx
+      - console.error lang
+
+   src/components/patients/PatientsPage.tsx
+      - console.error + catch(err)
+
+   src/components/auth/LoginPage.tsx
+      - catch(err: any)
+
+   src/components/admin/AccountsPage.tsx
+      - catch (silent — walang log)
+
+   src/components/admin/BackupPage.tsx
+      - catch (silent — walang log)
+
+   src/components/records/RecordsPage.tsx
+      - catch (silent — walang log)
+
+   src/components/reports/ReportsPage.tsx
+      - catch (silent — walang log)
+
+   src/components/consultation/ConsultationPage.tsx
+      - catch(err: any)
+
+   src/contexts/AuthContext.tsx
+      - catch(err: any)
+
+----------------------------------------------------------------
+NOTE:
+----------------------------------------------------------------
+   Ang mga components ay hindi gumagamit ng logger —
+   console.error o silent catch lang ang ginagamit.
+   Kung gusto mong consistent, i-import ang logger
+   sa mga components para mapunta sa System Logs
+   ang lahat ng errors.
+
+============================================================
