@@ -85,7 +85,7 @@ export default function Layout({ activeTab, onTabChange, children }: LayoutProps
         {/* Brand Header */}
         <div className="p-5 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
               <img src={logoUrl} alt="ePRIME-RHU" className="w-9 h-9 object-contain" />
             </div>
             <div>

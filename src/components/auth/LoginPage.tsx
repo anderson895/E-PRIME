@@ -67,20 +67,20 @@ export default function LoginPage() {
   />
 
   {/* Dark maroon overlay so text stays readable */}
-  <div className="absolute inset-0 bg-maroon/75" />
+  <div className="absolute inset-0 bg-maroon/60" />
 
   {/* Branding content — unchanged */}
   <div className="relative z-10 flex flex-col items-center gap-4 px-10 text-center">
-    <div className="bg-white rounded-3xl p-4 shadow-lg">
+    <div className="rounded-3xl  shadow-lg">
       <img
         src={logoUrl}
         alt="ePRIME-RHU Logo"
-        className="w-28 h-28 object-contain"
+        className="w-64 h-64 object-contain"
       />
     </div>
-    <h1 className="text-white text-4xl font-bold tracking-widest font-display">
+    {/* <h1 className="text-white text-4xl font-bold tracking-widest font-display">
       ePRIME-RHU
-    </h1>
+    </h1> */}
     <p className="text-white/80 text-sm leading-relaxed max-w-xs">
       Electronic Patient Record Information<br />
       and Management System For RHU<br />
