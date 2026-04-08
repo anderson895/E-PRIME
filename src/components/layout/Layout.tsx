@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   Home, Users, FileText, Stethoscope, BarChart3, Shield,
   ClipboardList, Database, LogOut, Menu, X, Bell,
-  ChevronDown,
+  ChevronDown, Activity,
 } from "lucide-react";
 import logoUrl from "@/logo.png";
 
@@ -30,6 +30,7 @@ function getNavItems(role: string): NavItem[] {
   if (role === "Nurse") {
     return [
       ...common,
+      { id: "vitals", label: "Take Vitals", icon: <Activity size={18} /> },
       { id: "reports", label: "Reports", icon: <BarChart3 size={18} /> },
     ];
   }

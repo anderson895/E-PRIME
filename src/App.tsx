@@ -7,6 +7,7 @@ import DashboardPage from "@/components/dashboard/DashboardPage";
 import PatientsPage from "@/components/patients/PatientsPage";
 import RecordsPage from "@/components/records/RecordsPage";
 import ConsultationPage from "@/components/consultation/ConsultationPage";
+import VitalsPage from "@/components/vitals/VitalsPage";
 import ReportsPage from "@/components/reports/ReportsPage";
 import AccountsPage from "@/components/admin/AccountsPage";
 import LogsPage from "@/components/admin/LogsPage";
@@ -46,6 +47,8 @@ function AppContent() {
         return <RecordsPage />;
       case "consultation":
         return user.role === "Doctor" ? <ConsultationPage /> : <DashboardPage />;
+      case "vitals":
+        return user.role === "Nurse" ? <VitalsPage /> : <DashboardPage />;
       case "reports":
         return <ReportsPage />;
       case "accounts":
